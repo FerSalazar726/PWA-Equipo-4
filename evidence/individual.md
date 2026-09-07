@@ -27,7 +27,7 @@
 - Limitación, dificultad o riesgo que identifiqué: al ejecutar el build mientras el servidor de desarrollo seguía activo, el artefacto local `.next` quedó inconsistente y produjo un error de módulo faltante. Eliminé únicamente ese artefacto generado y reinicié `npm run dev`; después la página respondió correctamente. Esto muestra que conviene no reutilizar el mismo estado de `.next` entre build y desarrollo.
 - Uso de IA: utilicé GitHub Copilot para revisar los comandos del proyecto, organizar esta redacción y analizar el error local. Validé cada afirmación ejecutando los comandos, revisando sus salidas y comprobando la respuesta HTTP; no delegué la decisión ni presenté como verificado algo que no ejecuté.
 
-Integrante: María Fernanda Fuentes Abascal
+## Integrante: María Fernanda Fuentes Abascal
 Mi contribución concreta y enlace a archivo, commit anterior o revisión: creé el repositorio privado del equipo, subí el contenido del starter (commit inicial: "Initial commit: PWA starter") e invité a los demás integrantes; escribí docs/requirements.md y docs/decision-record.md.
 Decisión que puedo explicar y por qué: mantuvimos la estrategia PWA con Next.js en lugar de una app nativa porque el problema central del caso (conectividad intermitente al registrar inspecciones) no requiere acceso profundo al hardware, y una app nativa implicaría mantener versiones separadas por plataforma que el equipo no tiene recursos para sostener durante el curso.
 Comando o prueba proporcionada que ejecuté: npm ci y npm run dev
