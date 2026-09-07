@@ -5,7 +5,7 @@
 - Grupo y equipo: 10A Equipo04
 - Repositorio del equipo: https://github.com/FerSalazar726/PWA-Equipo-4
 
-## Integrante: Jarumi
+## Integrante: Jarumi Guadalupe Flores Osorio
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión: revisé `docs/requirements.md` y `docs/decision-record.md` completos, ejecuté `bash public-tests/check.sh` y verifiqué el proyecto corriendo en local. Detecté que ambos documentos estaban aún vacíos (solo plantilla) y lo reporté al equipo antes de que se llenaran; después volví a revisarlos ya con el contenido real.
 - Decisión que puedo explicar y por qué: no sobrescribí ni completé yo misma los documentos cuando los encontré vacíos, porque mi tarea era revisar/corregir contenido existente, no redactarlo desde cero por mi cuenta; en vez de eso avisé al equipo para que quien correspondía lo completara y evitar duplicar o pisar trabajo.
@@ -17,7 +17,7 @@
 
 > No necesitan inventar un error ni escribir pruebas nuevas. «Ejecuté npm test» es insuficiente como explicación: indiquen qué observa la prueba y qué comportamiento queda fuera.
 
-## Integrante: Oscar
+## Integrante: Oscar Flores Cerqueda
 
 - Mi contribución concreta y enlace a archivo, commit anterior o revisión: confirmé que el starter se puede instalar y ejecutar en mi máquina; revisé la pantalla inicial y esta evidencia queda registrada en `evidence/individual.md`.
 - Decisión que puedo explicar y por qué: mantuve el alcance del starter sin implementar todavía funcionalidades PWA. Esta semana corresponde comprobar la reproducibilidad y documentar el producto, no agregar instalación, offline o sincronización.
@@ -26,3 +26,12 @@
 - Qué verifica esa prueba y qué no verifica: comprueba la instalación reproducible mediante el lockfile, la prueba proporcionada, la compilación y que la pantalla inicial responda con los tres registros esperados. No comprueba todavía instalación como PWA, service worker, funcionamiento offline, sincronización, autenticación, persistencia de datos, accesibilidad completa ni la calidad académica de los documentos.
 - Limitación, dificultad o riesgo que identifiqué: al ejecutar el build mientras el servidor de desarrollo seguía activo, el artefacto local `.next` quedó inconsistente y produjo un error de módulo faltante. Eliminé únicamente ese artefacto generado y reinicié `npm run dev`; después la página respondió correctamente. Esto muestra que conviene no reutilizar el mismo estado de `.next` entre build y desarrollo.
 - Uso de IA: utilicé GitHub Copilot para revisar los comandos del proyecto, organizar esta redacción y analizar el error local. Validé cada afirmación ejecutando los comandos, revisando sus salidas y comprobando la respuesta HTTP; no delegué la decisión ni presenté como verificado algo que no ejecuté.
+
+Integrante: María Fernanda Fuentes Abascal
+Mi contribución concreta y enlace a archivo, commit anterior o revisión: creé el repositorio privado del equipo, subí el contenido del starter (commit inicial: "Initial commit: PWA starter") e invité a los demás integrantes; escribí docs/requirements.md y docs/decision-record.md.
+Decisión que puedo explicar y por qué: mantuvimos la estrategia PWA con Next.js en lugar de una app nativa porque el problema central del caso (conectividad intermitente al registrar inspecciones) no requiere acceso profundo al hardware, y una app nativa implicaría mantener versiones separadas por plataforma que el equipo no tiene recursos para sostener durante el curso.
+Comando o prueba proporcionada que ejecuté: npm ci y npm run dev
+Resultado real que observé: las dependencias se instalaron sin errores usando el lockfile, y en http://localhost:3000 aparecieron las tres inspecciones sintéticas de ejemplo (Laboratorio de Redes, Electrónica y Software), cada una con su estado ("Sin incidencias" / "Requiere atención"), responsable y número de hallazgos.
+Qué verifica esa prueba y qué no verifica: confirma que el entorno se instala de forma reproducible con el lockfile y que la pantalla inicial carga correctamente los datos de ejemplo; no verifica que los requisitos documentados sean correctos, ni que el producto funcione sin conexión a internet (eso todavía no está implementado, solo documentado como requisito futuro).
+Limitación, dificultad o riesgo que identifiqué: el documento de decisión asume que la operación offline se resolverá más adelante con un service worker, pero por ahora no existe ninguna prueba real de eso; si el diseño de sincronización presenta problemas en semanas futuras, la justificación de la estrategia PWA tendría que revisarse.
+Uso de IA: usé Claude (Anthropic) para ayudarme a estructurar y redactar el borrador de docs/requirements.md y docs/decision-record.md, a partir de la información real del proyecto (el escenario del starter, los campos que muestra la pantalla de inspecciones, y las decisiones de alcance que el equipo definió). Yo revisé, ajusté y adapté el contenido antes de subirlo al repositorio.
