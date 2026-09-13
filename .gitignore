@@ -2,8 +2,8 @@ node_modules/
 .next/
 out/
 coverage/
+.test-build/
 *.log
 .env*
 !.env.example
 reports/verification.json
-

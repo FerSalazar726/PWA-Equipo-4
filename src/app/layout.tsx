@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { AppShell } from "@/components/app-shell";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Inspecciones de Laboratorio",
@@ -23,4 +23,3 @@ export default function RootLayout({
     </html>
   );
 }
-
