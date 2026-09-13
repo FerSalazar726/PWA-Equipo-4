@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node tests/starter.spec.mjs",
+    "test": "node tests/starter.spec.mjs && tsc --project tests/tsconfig.json && node --test .test-build/tests/app-shell.spec.js",
     "verify": "node scripts/verify.mjs"
   },
   "dependencies": {

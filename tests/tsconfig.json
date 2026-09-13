@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rootDir": "..",
+    "outDir": "../.test-build"
+  },
+  "include": ["app-shell.spec.tsx", "../src/components/app-shell.tsx"]
+}
