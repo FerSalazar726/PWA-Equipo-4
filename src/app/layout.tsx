@@ -1,15 +1,25 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AppShell } from "@/components/app-shell";
 
 export const metadata: Metadata = {
-  title: "Inspecciones de laboratorio",
-  description: "Proyecto base de Aplicaciones Web Progresivas"
+  title: "Inspecciones de Laboratorio",
+  description: "Registro de inspecciones de mantenimiento de laboratorios de la UTT",
+  manifest: "/manifest.webmanifest",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="es-MX">
-      <body>{children}</body>
+    <html lang="es">
+      <body>
+        <main>
+          <AppShell>{children}</AppShell>
+        </main>
+      </body>
     </html>
   );
 }
