@@ -1,54 +1,66 @@
-import { inspections } from "../lib/data/inspections";
+"use client";
 
-export default function HomePage() {
+// Pagina de Inspecciones de laboratorio: muestra los estados con datos sintéticos.
+
+import { useEffect, useState } from "react";
+import {
+  LoadingState,
+  ErrorState,
+  EmptyState,
+} from "@/components/app-shell";
+
+type Inspeccion = {
+  id: string;
+  laboratorio: string;
+  fecha: string;
+  responsable: string;
+  hallazgos: number;
+};
+
+const inspeccionesSinteticas: Inspeccion[] = [
+  { id: "1", laboratorio: "Laboratorio de Redes", fecha: "2026-08-28", responsable: "Tecnica A", hallazgos: 0 },
+  { id: "2", laboratorio: "Laboratorio de Electronica", fecha: "2026-08-27", responsable: "Tecnico B", hallazgos: 2 },
+  { id: "3", laboratorio: "Laboratorio de Software", fecha: "2026-08-26", responsable: "Tecnica C", hallazgos: 0 },
+];
+
+// Cambia este valor para probar cada estado a mano: "loading" | "error" | "empty" | "success"
+      const ESTADO_DE_PRUEBA: "loading" | "error" | "empty" | "success" = "success";
+export default function Page() {
+  const [estado, setEstado] = useState<"loading" | "error" | "empty" | "success">("loading");
+  const [datos, setDatos] = useState<Inspeccion[]>([]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (ESTADO_DE_PRUEBA === "error") {
+        setEstado("error");
+      } else if (ESTADO_DE_PRUEBA === "empty") {
+        setDatos([]);
+        setEstado("empty");
+      } else {
+        setDatos(inspeccionesSinteticas);
+        setEstado("success");
+      }
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, []);
+
   return (
-    <main className="page-shell">
-      <header className="hero">
-        <p className="eyebrow">Proyecto base · Semana 1</p>
-        <h1>Inspecciones de laboratorio</h1>
-        <p className="lead">
-          Registro de mantenimiento para trabajar con conectividad intermitente.
-          Los datos mostrados son sintéticos.
-        </p>
-        <span className="status">Estado del starter: ejecutable · PWA aún no implementada</span>
-      </header>
-
-      <section aria-labelledby="inspections-heading" className="content-section">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Datos de demostración</p>
-            <h2 id="inspections-heading">Inspecciones recientes</h2>
-          </div>
-          <span className="count">{inspections.length} registros</span>
-        </div>
-
-        <div className="inspection-grid">
-          {inspections.map((inspection) => (
-            <article className="inspection-card" key={inspection.id}>
-              <div className="card-topline">
-                <span className={`badge badge-${inspection.status}`}>{inspection.statusLabel}</span>
-                <span className="muted">{inspection.date}</span>
-              </div>
-              <h3>{inspection.location}</h3>
-              <p>{inspection.summary}</p>
-              <dl>
-                <div>
-                  <dt>Responsable</dt>
-                  <dd>{inspection.inspector}</dd>
-                </div>
-                <div>
-                  <dt>Hallazgos</dt>
-                  <dd>{inspection.findings}</dd>
-                </div>
-              </dl>
-            </article>
+    <>
+      {estado === "loading" && <LoadingState />}
+      {estado === "error" && (
+        <ErrorState message="No se pudo cargar la informacion." />
+      )}
+      {estado === "empty" && <EmptyState />}
+      {estado === "success" && (
+        <ul>
+          {datos.map((inspeccion) => (
+            <li key={inspeccion.id}>
+              <strong>{inspeccion.laboratorio}</strong> - {inspeccion.fecha} -{" "}
+              {inspeccion.responsable} - Hallazgos: {inspeccion.hallazgos}
+            </li>
           ))}
-        </div>
-      </section>
-
-      <footer className="footer">
-        <p>Aplicaciones Web Progresivas · Universidad Tecnológica de Tehuacán</p>
-      </footer>
-    </main>
+        </ul>
+      )}
+    </>
   );
 }
