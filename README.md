@@ -1,6 +1,6 @@
 # PWA de inspecciones de laboratorio — proyecto del equipo
 
-Este es un proyecto acumulativo: un repositorio privado por equipo durante el curso. `START_HERE.md` y `ACTIVIDAD-01.md` conservan las instrucciones de la Semana 1. El aporte de Oscar para la Semana 2 se documenta abajo; la integración completa de esa semana sigue pendiente del equipo.
+Este es un proyecto acumulativo: un repositorio privado por equipo durante el curso. `START_HERE.md` y `ACTIVIDAD-01.md` conservan las instrucciones de la Semana 1. La Semana 2 (app shell instalable y manifest) ya está integrada y verificada en `main`: manifest e íconos (Fernanda), app-shell con header/navegación/estados y rediseño visual (Oscar), y page.tsx con los 4 estados más las pruebas del manifest (Jarumi).
 
 ## Entorno
 
@@ -76,7 +76,7 @@ Codex realizó una comprobación adicional con Playwright y Edge en esos tamaño
 
 - Los estados son componentes reutilizables de presentación. Su separación evita repetir mensajes y roles; decidir cuándo mostrarlos corresponde a la página consumidora. Se conserva `"use client"`: el shell utiliza `usePathname` para señalar la sección activa con `aria-current`; los estados mantienen su interfaz de presentación. Esto incorpora el shell al límite cliente.
 - `/laboratorios` es el destino indicado en la guía, pero el repositorio aún no contiene esa ruta: devuelve HTTP 404. Su pantalla queda pendiente de integración por el equipo.
-- El manifest y los iconos de Fernanda ya se integraron desde main. `tests/manifest.spec.ts`, la comprobación de instalación y el uso de los estados en `page.tsx` siguen pendientes del equipo. Esta rama acredita el aporte de Oscar; no acredita la entrega completa de la Semana 2 ni instalación, offline o sincronización.
+- El manifest y los iconos de Fernanda, `tests/manifest.spec.ts` de Jarumi y el uso de los 4 estados en `page.tsx` ya están integrados y verificados en `main` (ver sección de cierre al final de este README). Sigue pendiente para semanas futuras: instalación real como PWA en un dispositivo, offline y sincronización.
 - `npm ci` y `npm audit --json` reportaron dos vulnerabilidades de las dependencias existentes: una crítica en Next.js y una alta en PostCSS. La corrección propuesta por npm implica cambiar de versión mayor de Next.js; requiere una actualización coordinada del proyecto. Las pruebas aprobadas no equivalen a una auditoría de seguridad.
 - Uso de IA: Codex (OpenAI) asistió en implementación, pruebas, comprobación de navegador y redacción. La evidencia distingue los resultados automatizados de la validación humana pendiente de Oscar.
 
@@ -88,3 +88,18 @@ Se integró `main` con `git pull --no-rebase origin main` (base `694638c`) antes
 Las animaciones de entrada son breves, los indicadores de carga terminan tras tres ciclos y `prefers-reduced-motion` desactiva el movimiento. La navegación cuenta con foco visible, enlace activo y acceso para saltar al contenido. La comprobación adicional de navegador abarcó anchos de 320 a 1440 píxeles, texto al 200%, enlaces internos, hover y movimiento reducido.
 
 Para revisar los estados sin modificar la página, ejecutar `npm run preview:states` y abrir `.test-build/states.html`. Los pasos completos, la paleta con relaciones de contraste, decisiones y límites están en [docs/design.md](docs/design.md). Capturas actuales: [escritorio](evidence/oscar-redesign-desktop.png), [móvil](evidence/oscar-redesign-mobile.png) y [estados](evidence/oscar-redesign-states.png). Las capturas anteriores se conservan como evidencia histórica.
+
+
+## Cierre de la Semana 2: integración final del equipo
+
+Fernanda integró en `main` las tres partes del equipo: su propio manifest/layout, el `app-shell.tsx` y rediseño visual de Oscar (en dos mezclas, ya que Oscar subió commits adicionales después de la primera), y el `page.tsx`/`tests/manifest.spec.ts` de Jarumi. Se resolvieron conflictos de Git en `evidence/individual.md`, `package.json` y `src/app/page.tsx`, conservando el diseño visual de Oscar pero conectado a los datos sintéticos reales (`Inspeccion`: laboratorio, fecha, responsable, hallazgos) en vez de a datos que no existían en el proyecto.
+
+Durante la integración se corrigieron tres fallos:
+- El alias `@/` no se resolvía al ejecutar las pruebas ya compiladas con Node (aunque TypeScript sí lo entendía); se resolvió usando una ruta relativa (`../components/app-shell`) en `page.tsx`.
+- El layout y la página tenían dos etiquetas `<main>` anidadas; se dejó un único `<main>` en `page.tsx` (el `layout.tsx` ya no agrega uno propio).
+- Faltaba el acento en "Electrónica" en los datos sintéticos, lo que hacía fallar una prueba de la portada.
+
+Resultado final: `npm test` con **28/28 pruebas pasando** (10 de `app-shell.spec.tsx`, 3 de `manifest.spec.ts`, 14 de contraste, 1 de la portada) y `npm run verify` en verde.
+
+- SHA final: `45e1910a0a855ee718eb989dce4b81a04453ef60`
+- Ejecución de GitHub Actions: https://github.com/FerSalazar726/PWA-Equipo-4/actions/runs/34806786966
