@@ -8,7 +8,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "rootDir": "..",
-    "outDir": "../.test-build"
+    "outDir": "../.test-build",
+    "baseUrl": "..",
+    "paths": { "@/*": ["src/*"] }
   },
   "include": ["app-shell.spec.tsx", "manifest.spec.ts", "../src/components/app-shell.tsx"]
 }

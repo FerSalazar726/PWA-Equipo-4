@@ -7,7 +7,7 @@ import {
   LoadingState,
   ErrorState,
   EmptyState,
-} from "@/components/app-shell";
+} from "../components/app-shell";
 
 type Inspeccion = {
   id: string;
@@ -19,7 +19,7 @@ type Inspeccion = {
 
 const inspeccionesSinteticas: Inspeccion[] = [
   { id: "1", laboratorio: "Laboratorio de Redes", fecha: "2026-08-28", responsable: "Tecnica A", hallazgos: 0 },
-  { id: "2", laboratorio: "Laboratorio de Electronica", fecha: "2026-08-27", responsable: "Tecnico B", hallazgos: 2 },
+  { id: "2", laboratorio: "Laboratorio de Electrónica", fecha: "2026-08-27", responsable: "Tecnico B", hallazgos: 2 },
   { id: "3", laboratorio: "Laboratorio de Software", fecha: "2026-08-26", responsable: "Tecnica C", hallazgos: 0 },
 ];
 
@@ -27,29 +27,16 @@ const inspeccionesSinteticas: Inspeccion[] = [
 const ESTADO_DE_PRUEBA: "loading" | "error" | "empty" | "success" = "success";
 
 export default function Page() {
-  const [estado, setEstado] = useState<"loading" | "error" | "empty" | "success">("loading");
-  const [datos, setDatos] = useState<Inspeccion[]>([]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (ESTADO_DE_PRUEBA === "error") {
-        setEstado("error");
-      } else if (ESTADO_DE_PRUEBA === "empty") {
-        setDatos([]);
-        setEstado("empty");
-      } else {
-        setDatos(inspeccionesSinteticas);
-        setEstado("success");
-      }
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, []);
+   const estado: "loading" | "error" | "empty" | "success" = ESTADO_DE_PRUEBA;
+   const datos: Inspeccion[] = 
+   ESTADO_DE_PRUEBA === "success" ? inspeccionesSinteticas : [];
+  
 
   const attentionCount = datos.filter((d) => d.hallazgos > 0).length;
   const okCount = datos.filter((d) => d.hallazgos === 0).length;
 
   return (
-    <div className="page-shell">
+    <main className="page-shell">
       <div className="page-heading">
         <p className="eyebrow">Gestión de espacios / Equipo 04</p>
         <span className="edition-label">Bitácora de mantenimiento</span>
@@ -116,6 +103,6 @@ export default function Page() {
         <div><strong>El cuidado está en los detalles.</strong><p>Universidad Tecnológica de Tehuacán · Equipo 04</p></div>
         <span className="footer-tag">Proyecto de Aplicaciones Web Progresivas <span aria-hidden="true">↗</span></span>
       </footer>
-    </div>
+    </main>
   );
 }
