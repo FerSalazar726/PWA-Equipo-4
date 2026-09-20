@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 function LabMark() {
@@ -107,12 +108,36 @@ export function EmptyState() {
   );
 }
 
+export function OfflineBanner() {
+  const [isOffline, setIsOffline] = useState(false);
+
+  useEffect(() => {
+    const updateStatus = () => setIsOffline(!navigator.onLine);
+    updateStatus();
+    window.addEventListener("online", updateStatus);
+    window.addEventListener("offline", updateStatus);
+    return () => {
+      window.removeEventListener("online", updateStatus);
+      window.removeEventListener("offline", updateStatus);
+    };
+  }, []);
+
+  if (!isOffline) return null;
+
+  return (
+    <div role="status" className="offline-banner">
+      Estás sin conexión. Mostrando datos guardados.
+    </div>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "/";
   return (
     <>
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
       <Header pathname={pathname} />
+      <OfflineBanner />
       <div className="shell-content" id="contenido" tabIndex={-1}>{children}</div>
     </>
   );
