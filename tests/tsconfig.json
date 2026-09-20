@@ -16,7 +16,7 @@
     "app-shell.spec.tsx",
     "manifest.spec.ts",
     "service-worker.spec.ts",
-    "offline.spec.ts",
+    "offline.spec.tsx",
     "../src/components/app-shell.tsx",
     "../src/lib/pwa/register-service-worker.ts"
   ]

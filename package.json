@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "preview:states": "tsc --project tests/tsconfig.json && node scripts/preview-states.mjs",
-    "test": "node tests/starter.spec.mjs && tsc --project tests/tsconfig.json && node --test .test-build/tests/app-shell.spec.js .test-build/tests/manifest.spec.js .test-build/tests/service-worker.spec.js tests/design.spec.mjs tests/register-sw.spec.mjs",
+    "test": "node tests/starter.spec.mjs && tsc --project tests/tsconfig.json && node --test .test-build/tests/app-shell.spec.js .test-build/tests/manifest.spec.js .test-build/tests/service-worker.spec.js .test-build/tests/offline.spec.js tests/design.spec.mjs tests/register-sw.spec.mjs",
     "verify": "node scripts/verify.mjs"
   },
   "dependencies": {
