@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { AppShell } from "@/components/app-shell";
+import { RegisterSW } from "@/components/register-sw";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="es">
       <body>
         <AppShell>{children}</AppShell>
+        <RegisterSW />
       </body>
     </html>
   );
