@@ -34,6 +34,7 @@ svg { display: block; }
 /* Masthead: an institutional mark and numbered, keyboard-accessible tabs. */
 /* Next's default 404 changes body text in dark mode; keep the masthead independent. */
 .app-header { color: var(--ink); border-top: 5px solid var(--ink); border-bottom: 1px solid var(--line); background: var(--surface); }
+.offline-banner { padding: 14px 20px; background: var(--warning-soft); color: var(--warning); border-bottom: 2px solid var(--warning); text-align: center; font-weight: 600; overflow-wrap: anywhere; }
 .masthead { max-width: 1280px; margin: auto; min-height: 100px; padding: 20px 40px; display: flex; align-items: center; gap: 42px; }
 .brand { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 .brand-mark { width: 48px; height: 48px; background: var(--ink); color: var(--accent); padding: 5px; border-radius: 2px; }

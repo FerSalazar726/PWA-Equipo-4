@@ -103,3 +103,9 @@ Resultado final: `npm test` con **28/28 pruebas pasando** (10 de `app-shell.spec
 
 - SHA final: `45e1910a0a855ee718eb989dce4b81a04453ef60`
 - Ejecución de GitHub Actions: https://github.com/FerSalazar726/PWA-Equipo-4/actions/runs/34806786966
+
+## Semana 3: aviso de conexión y documentación de Oscar
+
+La rama `oscar-semana-3` incorpora `OfflineBanner`, sus estilos, la [estrategia de caché y pasos de prueba](docs/cache-strategy.md) y la [evidencia de Oscar](evidence/individual.md#semana-3-oscar). También corrige el registro del service worker cuando React monta después del evento `load`, con cuatro pruebas de regresión. Esta sección actualiza el estado de las notas históricas de Semana 2: el worker y su respaldo offline ya están integrados; la sincronización sigue pendiente.
+
+Verificación local del 20 de septiembre de 2026: `npm run verify` pasó con 32 pruebas y build de producción correcto. En Edge se comprobaron desconexión/reconexión, recarga offline de la portada, respaldo para una ruta no visitada y anchos de 1280, 390 y 320 píxeles. Las capturas y limitaciones se describen en la evidencia individual.
