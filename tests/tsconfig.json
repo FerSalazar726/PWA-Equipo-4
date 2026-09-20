@@ -12,5 +12,5 @@
     "baseUrl": "..",
     "paths": { "@/*": ["src/*"] }
   },
-  "include": ["app-shell.spec.tsx", "manifest.spec.ts", "../src/components/app-shell.tsx"]
+  "include": ["app-shell.spec.tsx", "manifest.spec.ts", "service-worker.spec.ts", "../src/components/app-shell.tsx"]
 }
