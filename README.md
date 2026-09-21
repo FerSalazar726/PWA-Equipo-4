@@ -117,5 +117,5 @@ Fernanda integró en `main` las tres partes de esta semana: su propio service wo
 
 Resultado final: `npm test` con **39/39 pruebas pasando** y `npm run verify` en verde (instalación, prueba, build). Se confirmó visualmente en el navegador que, con el service worker activo y sin conexión, la página principal sigue cargando desde caché y aparece el aviso de Oscar ("Estás sin conexión. Mostrando datos guardados.").
 
-- SHA final: `[pendiente]`
-- Ejecución de GitHub Actions: `[pendiente]`
+- SHA final: `db146a67d91081478d53e4d61318f804e1f1988a`
+- Ejecución de GitHub Actions: https://github.com/FerSalazar726/PWA-Equipo-4/actions/runs/35557883133

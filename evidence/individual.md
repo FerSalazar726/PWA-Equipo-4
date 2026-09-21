@@ -95,18 +95,20 @@ Uso de IA: usé Claude (Anthropic) para ayudarme a estructurar y redactar el bor
 
 
 ## Integrante: María Fernanda Fuentes Abascal — Semana 3
+
 ## Integrante: María Fernanda Fuentes Abascal — Semana 3
 
-- Fecha de verificación: 19 de septiembre de 2026.
-- Commit: `d40fee4`.
-- Contribución concreta: creé `public/sw.js` (el service worker), `public/offline.html` (página de respaldo), `src/lib/pwa/register-service-worker.ts` (función de registro) y `src/components/register-sw.tsx` (componente cliente que lo activa), y lo conecté en `src/app/layout.tsx`.
-- Decisión que puedo explicar y por qué: implementé la estrategia stale-while-revalidate (responder primero desde caché y actualizar en segundo plano) en vez de cache-first puro o network-first puro. Elegí esto porque el caso de uso son inspecciones con conectividad intermitente: el usuario necesita ver algo de inmediato, pero también que los datos se actualicen solos en cuanto haya señal.
-- Comando o prueba proporcionada que ejecuté: `npm run build` seguido de `npm run start` (el service worker no se activa completo con `npm run dev`). Después probé manualmente en DevTools → Application → Service Workers, y en DevTools → Network marcando "Sin conexión".
-- Resultado real que observé: el service worker se registró y quedó "activado y en ejecución". Con "Sin conexión" activado, la página principal (ya visitada antes) siguió cargando completa desde caché; al navegar a una ruta nunca visitada (`/una-pagina-que-no-existe`) sin conexión, se mostró correctamente `offline.html`.
-- Qué verifica esa prueba y qué no verifica: confirma que el precache funciona (la página, el manifest y los estilos quedan disponibles offline) y que el fallback a `offline.html` funciona para rutas no cacheadas. No verifica sincronización en segundo plano (Background Sync) ni el comportamiento con peticiones que no sean GET, porque no están implementadas esta semana.
-- Limitación, dificultad o riesgo que identifiqué: el cache no tiene límite de tamaño ni expiración por tiempo, solo se limpia cuando cambia el número de versión (`CACHE_NAME`); si en el futuro se agregan muchos más recursos al precache sin subir esa versión, podría quedarse sirviendo contenido desactualizado indefinidamente.
-- Uso de IA: usé Claude (Anthropic) para estructurar el service worker, la estrategia de caché y el componente de registro, y para guiarme paso a paso en las pruebas de DevTools. Yo ejecuté cada comando, activé el modo sin conexión y confirmé con mis propios ojos ambos comportamientos (página cacheada y fallback offline) antes de documentarlos aquí.
-## Semana 3: Oscar
+- Fecha de verificación: 20 de septiembre de 2026.
+- Commit final: `[el que saques al final de este paso]`.
+- Contribución concreta: creé `public/sw.js` (el service worker), `public/offline.html` (página de respaldo), `src/lib/pwa/register-service-worker.ts` (función de registro) y `src/components/register-sw.tsx` (componente cliente que lo activa), y lo conecté en `src/app/layout.tsx`. Además, integré en `main` las ramas `oscar-semana-3` y `jarumi/semana-3-pruebas`, y actualicé el `README.md` con el cierre de la semana.
+- Decisión que puedo explicar y por qué: implementé la estrategia stale-while-revalidate (responder primero desde caché y actualizar en segundo plano) en vez de cache-first puro o network-first puro, porque el caso de uso son inspecciones con conectividad intermitente: el usuario necesita ver algo de inmediato, pero también que los datos se actualicen solos en cuanto haya señal. Al integrar, mezclé primero la rama de Oscar y luego la de Jarumi, en ese orden, porque Jarumi dependía de que ya existiera el `OfflineBanner` de Oscar para poder probarlo en sus pruebas.
+- Comando o prueba que ejecuté y resultado real: `npm run build` seguido de `npm run start` (el service worker no se activa completo con `npm run dev`), probando en DevTools → Application → Service Workers y en Network con "Sin conexión" activado. Después, al integrar: `git merge origin/oscar-semana-3` y `git merge origin/jarumi/semana-3-pruebas`, ambos fast-forward sin conflictos; `npm ci`, `npm test` (39/39 pruebas pasando) y `npm run verify` (pass).
+- Resultado real que observé: el service worker se registró y quedó "activado y en ejecución". Con "Sin conexión" activado, la página principal (ya visitada antes) siguió cargando completa desde caché, con el aviso de Oscar visible ("Estás sin conexión. Mostrando datos guardados."); al navegar a una ruta nunca visitada sin conexión, se mostró correctamente `offline.html`.
+- Qué verifica esa prueba y qué no verifica: las 39 pruebas y la comprobación visual confirman que el precache, el fallback offline, el aviso de conexión y el registro del service worker funcionan como se espera. No verifican sincronización en segundo plano (Background Sync), peticiones que no sean GET, ni el comportamiento en un dispositivo móvil real.
+- Limitación, dificultad o riesgo que identifiqué: el cache no tiene límite de tamaño ni expiración por tiempo, solo se limpia cuando cambia el número de versión (`CACHE_NAME`). Además, aunque Oscar, Jarumi y yo tocamos varios archivos compartidos (`package.json`, `tests/tsconfig.json`, `evidence/individual.md`), esta vez no hubo ningún conflicto de Git — más suerte que garantía, ya que el mismo reparto de trabajo sí generó varios conflictos la Semana 2.
+- Uso de IA: usé Claude (Anthropic) para estructurar el service worker, la estrategia de caché, el orden de integración de las ramas, y para guiarme paso a paso en las pruebas de DevTools. Yo ejecuté cada comando, activé el modo sin conexión y confirmé con mis propios ojos cada resultado antes de documentarlo aquí.
+
+## Semana 3: Oscar Flores Cerqueda
 
 - Fecha de verificación: 20 de septiembre de 2026.
 - Rama: `oscar-semana-3`, creada desde `7f60ca7` de `main`. Git no permite espacios en los nombres de ramas.
