@@ -194,3 +194,19 @@ h3 { font-size: 1.25rem; font-weight: 650; letter-spacing: -.035em; line-height:
   .brand-mark, .badge, .primary-link, .register-summary { border: 1px solid CanvasText; }
   .main-nav a[aria-current="page"] { text-decoration: underline; }
 }
+
+/* Semana 4: esqueleto del detalle CSR. */
+.loading-skeleton { display: flex; flex-direction: column; gap: .6rem; padding: 1rem 0; }
+.skeleton-line { height: 1rem; border-radius: 6px; background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: skeleton-pulse 1.4s ease-in-out infinite; }
+.skeleton-line-title { height: 1.5rem; width: 60%; }
+.skeleton-line-short { width: 40%; }
+@keyframes skeleton-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.inspection-detail { margin: 24px 0; padding: 8px 24px; background: var(--surface); border: 1px solid var(--line); border-top: 3px solid var(--success); }
+.inspection-detail > div { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr); gap: 12px; padding: 16px 0; }
+.inspection-detail > div + div { border-top: 1px solid var(--line); }
+.inspection-detail dt { font-weight: 700; }
+.inspection-detail dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .inspection-detail > div { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+@media (prefers-reduced-motion: reduce) { .skeleton-line { animation: none; } }
+@media (forced-colors: active) { .skeleton-line { background: Canvas; border: 1px solid CanvasText; } }
