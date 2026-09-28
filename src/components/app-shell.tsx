@@ -94,14 +94,17 @@ export function ErrorState({ message }: { message: string }) {
   );
 }
 
-export function EmptyState() {
+export function EmptyState({
+  title = "No hay inspecciones registradas todavía.",
+  message = "Cuando haya registros disponibles, aparecerán en este espacio.",
+}: { title?: string; message?: string } = {}) {
   return (
     <div className="state-panel state-empty" role="status">
       <StateSymbol kind="empty" />
       <div className="state-copy">
         <p className="eyebrow">Una bitácora por comenzar</p>
-        <h2>No hay inspecciones registradas todavía.</h2>
-        <p>Cuando haya registros disponibles, aparecerán en este espacio.</p>
+        <h2>{title}</h2>
+        <p>{message}</p>
       </div>
       <span className="state-code" aria-hidden="true">REGISTRO / 00</span>
     </div>
