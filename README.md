@@ -119,3 +119,8 @@ Resultado final: `npm test` con **39/39 pruebas pasando** y `npm run verify` en 
 
 - SHA final: `db146a67d91081478d53e4d61318f804e1f1988a`
 - Ejecución de GitHub Actions: https://github.com/FerSalazar726/PWA-Equipo-4/actions/runs/35557883133
+## Semana 4: detalle CSR de Oscar
+
+La rama `oscar/semana-4-detalle-csr` incorpora el listado y la API de Fernanda y añade `/inspecciones/[id]`, el esqueleto independiente de carga y los estados de error/no encontrado/éxito. Abrir `/inspecciones` y elegir un laboratorio; los IDs reales van de `inspection-001` a `inspection-003`. `/inspecciones/no-existe` muestra un estado vacío contextual. El detalle solicita sus datos desde el navegador; el listado actual se prerenderiza en el build con los datos en su HTML.
+
+`npm run verify` comprobó 39 pruebas y el build. La [evidencia de Semana 4](evidence/individual.md#semana-4-oscar---detalle-csr) contiene resultados, decisiones y capturas. Para reproducir los escenarios de navegador, iniciar desarrollo (`npm run dev`) o producción (`npm run build` y `npm run start`, sin ejecutar ambos servidores al mismo tiempo). Con Playwright disponible y Microsoft Edge instalado, ejecutar `node scripts/check-detail.cjs`; agregar `--screenshots` para actualizar las capturas. Si Playwright está en un runtime externo, establecer `PLAYWRIGHT_MODULE` con la ruta absoluta a su paquete. `TEST_BASE_URL` permite cambiar el servidor; por defecto es `http://127.0.0.1:3000`. No se añadió Playwright a las dependencias del proyecto ni a `npm test`.
