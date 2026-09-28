@@ -4,6 +4,7 @@ import { getInspections } from "@/lib/data/inspections";
 // Server-Side Rendering (SSR): esta pagina no lleva "use client".
 // Se genera en el servidor en cada solicitud, con los datos ya resueltos
 // antes de enviar el HTML al navegador (no hay fetch desde el cliente).
+export const dynamic = "force-dynamic";
 export default async function InspeccionesPage() {
   const inspections = await getInspections();
 
