@@ -44,3 +44,12 @@ export const inspections: Inspection[] = [
   }
 ];
 
+export async function getInspections(): Promise<Inspection[]> {
+  // Simula una consulta asincrona (por ejemplo, a una base de datos real)
+  return inspections;
+}
+
+export async function getInspectionById(id: string): Promise<Inspection | null> {
+  const encontrada = inspections.find((i) => i.id === id);
+  return encontrada ?? null;
+}
