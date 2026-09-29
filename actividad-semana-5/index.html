@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Semana 5 · Registro de ventas</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">ACTIVIDAD SEMANA 5</p>
+      <h1>Registro de ventas</h1>
+      <p>Guarda tus ventas localmente y sincronízalas con un servidor simulado.</p>
+    </header>
+    <section aria-labelledby="saleTitle">
+      <h2 id="saleTitle">Nueva venta</h2>
+      <form id="saleForm">
+        <label for="product">Producto</label>
+        <input id="product" type="text" required maxlength="120" placeholder="Ej. Coca-Cola">
+        <label for="quantity">Cantidad</label>
+        <input id="quantity" type="number" required min="1" step="1" value="1">
+        <button id="registerButton" type="submit">Registrar venta</button>
+      </form>
+    </section>
+    <section aria-labelledby="operationsTitle">
+      <div class="section-heading">
+        <h2 id="operationsTitle">Operaciones</h2>
+        <button id="syncButton" type="button">Sincronizar operaciones</button>
+      </div>
+      <p class="hint">pending → inFlight → done / failed. Reintentar devuelve una operación a pending.</p>
+      <p id="message" role="status" aria-live="polite"></p>
+      <div id="operations" aria-live="polite"></div>
+    </section>
+    <footer>Persistencia en este navegador · Respuesta simulada en 2 segundos</footer>
+  </main>
+</body>
+</html>
