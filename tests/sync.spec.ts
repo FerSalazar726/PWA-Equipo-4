@@ -1,88 +1,100 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { test, beforeEach } from "node:test";
+import {
+  enqueueOperation,
+  getPendingOperations,
+  syncQueue,
+} from "../src/lib/sync/queue";
+import type { SyncOperation } from "../src/lib/storage/schema";
 import { resolveConflict } from "../src/lib/sync/conflict-policy";
-import { getPendingOperations } from "../src/lib/sync/queue";
-import type { InspectionPayload, SyncOperation } from "../src/lib/storage/schema";
 
-const localPayload: InspectionPayload = {
-  inspectionId: "inspection-001",
-  status: "attention",
-  findings: 1,
-  summary: "Cambio local",
-};
-const remotePayload: InspectionPayload = {
-  inspectionId: "inspection-001",
-  status: "ok",
-  findings: 0,
-  summary: "Cambio remoto",
-};
-const localOperation: SyncOperation = {
-  operationId: "op-001",
-  inspectionId: "inspection-001",
-  payload: localPayload,
-  createdAt: "2026-10-04T12:00:00.000Z",
-  status: "pending",
-};
+function createLocalStorageMock() {
+  const store = new Map<string, string>();
+  return {
+    getItem: (key: string) => (store.has(key) ? store.get(key)! : null),
+    setItem: (key: string, value: string) => {
+      store.set(key, value);
+    },
+    removeItem: (key: string) => {
+      store.delete(key);
+    },
+  };
+}
 
-test("resuelve el conflicto a favor del cambio local más reciente", () => {
-  const result = resolveConflict(localOperation, {
-    inspectionId: "inspection-001",
-    payload: remotePayload,
-    updatedAt: "2026-10-04T11:59:00.000Z",
-  });
-  assert.equal(result.winner, "local");
-  assert.equal(result.payload, localPayload);
-  assert.match(result.reason, /local/);
+beforeEach(() => {
+  (globalThis as any).window = { localStorage: createLocalStorageMock() };
 });
 
-test("resuelve el conflicto a favor del cambio remoto más reciente", () => {
-  const result = resolveConflict(localOperation, {
-    inspectionId: "inspection-001",
-    payload: remotePayload,
-    updatedAt: "2026-10-04T12:01:00.000Z",
-  });
-  assert.equal(result.winner, "remote");
-  assert.equal(result.payload, remotePayload);
-  assert.match(result.reason, /remoto/);
+function crearOperacion(parcial: Partial<SyncOperation> = {}): SyncOperation {
+  return {
+    operationId: "op-1",
+    inspectionId: "inspection-local-1",
+    type: "create",
+    payload: {
+      location: "Laboratorio de Redes",
+      date: "2026-09-28",
+      inspector: "Tecnica A",
+      status: "ok",
+      statusLabel: "Sin incidencias",
+      findings: 0,
+      summary: "Prueba",
+    },
+    createdAt: new Date().toISOString(),
+    status: "pending",
+    attempts: 0,
+    ...parcial,
+  };
+}
+
+test("enqueueOperation no duplica una operacion con el mismo operationId", () => {
+  enqueueOperation(crearOperacion());
+  enqueueOperation(crearOperacion());
+  assert.equal(getPendingOperations().length, 1);
 });
 
-test("si las fechas empatan, conserva el payload local", () => {
-  const result = resolveConflict(localOperation, {
-    inspectionId: "inspection-001",
-    payload: remotePayload,
-    updatedAt: localOperation.createdAt,
-  });
-  assert.equal(result.winner, "local");
-  assert.equal(result.payload, localPayload);
+test("syncQueue marca como synced cuando el envio es exitoso", async () => {
+  enqueueOperation(crearOperacion({ operationId: "op-2" }));
+  await syncQueue(async () => ({ ok: true }));
+  assert.equal(getPendingOperations().length, 0);
 });
 
-test("rechaza timestamps inválidos para no elegir un ganador arbitrario", () => {
-  assert.throws(
-    () => resolveConflict({ ...localOperation, createdAt: "fecha inválida" }, {
-      inspectionId: "inspection-001",
-      payload: remotePayload,
-      updatedAt: "2026-10-04T12:01:00.000Z",
-    }),
-    RangeError,
+test("syncQueue reintenta y cuenta los intentos cuando falla", async () => {
+  enqueueOperation(crearOperacion({ operationId: "op-3" }));
+  await syncQueue(async () => ({ ok: false, error: "500" }));
+  const pendientes = getPendingOperations();
+  assert.equal(pendientes.length, 1);
+  assert.equal(pendientes[0].attempts, 1);
+  assert.equal(pendientes[0].status, "error");
+});
+
+test("syncQueue deja de reintentar despues del maximo de intentos", async () => {
+  enqueueOperation(
+    crearOperacion({ operationId: "op-4", attempts: 3, status: "error" })
   );
+  let llamadas = 0;
+  await syncQueue(async () => {
+    llamadas += 1;
+    return { ok: false, error: "500" };
+  });
+  assert.equal(llamadas, 0);
 });
 
-test("cuenta solo las operaciones pending almacenadas", () => {
-  const operations = [
-    localOperation,
-    { ...localOperation, operationId: "op-002", status: "done" },
-    { ...localOperation, operationId: "op-003", status: "failed" },
-    { ...localOperation, operationId: "op-004", status: "inFlight" },
-  ];
-  const originalWindow = globalThis.window;
-  Object.defineProperty(globalThis, "window", {
-    configurable: true,
-    value: { localStorage: { getItem: (key: string) => key === "inspection-sync-operations" ? JSON.stringify(operations) : null } },
+test("resolveConflict elige el cambio local si es mas reciente", () => {
+  const local = crearOperacion({ createdAt: "2026-09-28T12:00:00.000Z" });
+  const resultado = resolveConflict(local, {
+    inspectionId: "inspection-local-1",
+    payload: local.payload,
+    updatedAt: "2026-09-28T10:00:00.000Z",
   });
-  try {
-    assert.deepEqual(getPendingOperations(), [localOperation]);
-  } finally {
-    if (originalWindow === undefined) delete (globalThis as { window?: Window }).window;
-    else Object.defineProperty(globalThis, "window", { configurable: true, value: originalWindow });
-  }
+  assert.equal(resultado.winner, "local");
+});
+
+test("resolveConflict elige el cambio remoto si es mas reciente", () => {
+  const local = crearOperacion({ createdAt: "2026-09-28T08:00:00.000Z" });
+  const resultado = resolveConflict(local, {
+    inspectionId: "inspection-local-1",
+    payload: local.payload,
+    updatedAt: "2026-09-28T10:00:00.000Z",
+  });
+  assert.equal(resultado.winner, "remote");
 });

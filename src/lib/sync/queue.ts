@@ -1,4 +1,4 @@
-import { SyncOperation, STORAGE_KEY } from "@/lib/storage/schema";
+import { SyncOperation, STORAGE_KEY } from "../storage/schema";
 
 function hasLocalStorage(): boolean {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
