@@ -13,7 +13,7 @@ export type InspectionPayload = {
 
 export type SyncOperation = {
   operationId: string; // llave de idempotencia, generada en el cliente
-  inspectionId: string; // a cuál inspección aplica
+  inspectionId: string; // a cual inspeccion aplica
   type: SyncOperationType;
   payload: InspectionPayload;
   createdAt: string; // ISO timestamp, usado para resolver conflictos

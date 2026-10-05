@@ -1,4 +1,4 @@
-import { SyncOperation, STORAGE_KEY } from "@/lib/storage/schema";
+import { SyncOperation, STORAGE_KEY } from "../storage/schema";
 
 function hasLocalStorage(): boolean {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -21,13 +21,13 @@ function writeQueue(queue: SyncOperation[]): void {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(queue));
   } catch (error) {
     // Por ejemplo, cuota de localStorage llena.
-    console.error("No se pudo guardar la cola de sincronización", error);
+    console.error("No se pudo guardar la cola de sincronizacion", error);
   }
 }
 
 export function enqueueOperation(operation: SyncOperation): void {
   const queue = readQueue();
-  // Idempotencia: si ya existe una operación con el mismo operationId, no se duplica.
+  // Idempotencia: si ya existe una operacion con el mismo operationId, no se duplica.
   const yaExiste = queue.some((op) => op.operationId === operation.operationId);
   if (yaExiste) return;
   queue.push(operation);
@@ -56,7 +56,7 @@ export function getPendingOperations(): SyncOperation[] {
   );
 }
 
-// Máximo de intentos acumulados por operación (se cuenta entre llamadas a syncQueue).
+// Maximo de intentos acumulados por operacion (se cuenta entre llamadas a syncQueue).
 const MAX_ATTEMPTS = 3;
 
 export type EnviarOperacion = (

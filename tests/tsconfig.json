@@ -18,7 +18,9 @@
     "service-worker.spec.ts",
     "offline.spec.tsx",
     "rendering.spec.ts",
+    "sync.spec.ts",
     "../src/components/app-shell.tsx",
+    "../src/lib/sync/queue.ts",
     "../src/lib/pwa/register-service-worker.ts"
   ]
 }

@@ -149,6 +149,23 @@ Uso de IA: usé Claude (Anthropic) para ayudarme a estructurar y redactar el bor
 - Uso de IA: Codex (OpenAI) interpretó la guía, implementó los cambios, ejecutó pruebas y redactó esta evidencia. Estos resultados son comprobaciones automatizadas, no una revisión manual realizada por Oscar.
 - Validación humana de Oscar: pendiente de revisar el diff y reproducir las rutas y estados antes de la entrega.
 
+## Semana 5: Oscar - conflictos y estado de sincronización
+
+- Fecha de implementación: 4 de octubre de 2026.
+- Rama: `oscar/semana-5-conflictos`.
+- Contribución: `src/lib/storage/schema.ts` define el payload de inspección y la operación local; `src/lib/sync/queue.ts` expone la lectura segura de operaciones `pending`; `src/lib/sync/conflict-policy.ts` decide entre payload local y remoto por timestamp. `SyncStatusBadge` en `src/components/app-shell.tsx` informa el número de cambios pendientes y se actualiza al cargar, al recibir `storage` y cada dos segundos. Se añadieron sus estilos en `src/app/globals.css`.
+- Decisión: se usa last-write-wins porque produce una resolución determinista sencilla cuando el cliente reconecta. Si las fechas empatan, gana el cambio local para no descartar silenciosamente una edición hecha en el dispositivo. Fusionar campos por separado requeriría reglas de dominio para cada campo y podría formar combinaciones que ningún usuario guardó como un todo.
+- Comprobación ejecutada: `npm run verify` aprobó 50/50 pruebas y el build de producción, incluidas cinco nuevas para los dos ganadores posibles, empate, fecha inválida y filtrado de operaciones pendientes. Para la comprobación manual que pide la guía, iniciar `npm run dev`, abrir la app y ejecutar en DevTools:
+
+  ```js
+  localStorage.setItem("inspection-sync-operations", JSON.stringify([{operationId:"demo-001",inspectionId:"inspection-001",payload:{inspectionId:"inspection-001",status:"attention",findings:1,summary:"Cambio local"},createdAt:new Date().toISOString(),status:"pending"}])); location.reload();
+  ```
+
+  Oscar ejecutó la comprobación manual en Chrome y confirmó visualmente el mensaje “1 cambio pendiente de sincronizar” después de recargar (captura compartida el 4 de octubre de 2026). La consola mostró además un error separado: el service worker intentó guardar en caché una solicitud `chrome-extension://`; no impidió mostrar el badge. Para limpiar el dato de prueba, ejecutar `localStorage.removeItem("inspection-sync-operations")` y recargar. La rama inicial no contenía los módulos `schema.ts` ni `queue.ts` mencionados en la guía, así que se añadieron como contrato mínimo. La demo `actividad-semana-5` usa la clave `operations` y representa ventas independientes; no comparte datos ni contrato con la PWA.
+- Limitación: last-write-wins puede perder un cambio legítimo si dos ediciones ocurren casi al mismo tiempo, y depende de relojes razonablemente correctos. La cola local incorporada expone lectura y conteo, pero no implementa envío real a servidor ni registra inspecciones desde el formulario actual.
+- Uso de IA: Codex (OpenAI) interpretó el PDF, creó la rama e implementó los módulos, el badge y esta documentación. `npm run verify` encontró primero que el alias `@/` no se resuelve en los tests CommonJS; se cambiaron las importaciones internas nuevas a rutas relativas.
+- Validación humana de Oscar: pendiente de revisar el diff, poblar la cola desde DevTools, comprobar el aviso y explicar la decisión y sus límites antes de entregar.
+
 ## Integrante: Jarumi [su apellido] — Semana 4
 
 - Fecha de verificación: 27 de septiembre de 2026.
@@ -172,36 +189,26 @@ Uso de IA: usé Claude (Anthropic) para ayudarme a estructurar y redactar el bor
 - Limitación, dificultad o riesgo que identifiqué: los datos son un arreglo en memoria, no una base de datos real, así que la "consulta" es simulada y `force-dynamic` no aporta un costo real todavía; con una base de datos, renderizar en cada petición sí tendría costo y habría que evaluar caché o revalidación. También me equivoqué al crear el `page.tsx` del listado dentro de `app/api/inspecciones/` en vez de `app/inspecciones/`, lo que dio un 404; borré y recreé las carpetas como hermanas.
 - Uso de IA: usé Claude (Anthropic) para guiarme en la estructura de carpetas, diagnosticar el 404 y la diferencia entre página estática y dinámica en la tabla del build, y redactar esta sección. Ejecuté cada comando, revisé cada resultado en mi terminal y navegador, y verifiqué en el build que el cambio surtió efecto.
 
-## Integrante: María Fernanda Fuentes Abascal - semana 5 
- ## Mi contribución
-Implementé la base de la persistencia offline de la PWA. Creé `src/lib/storage/schema.ts`, que define
-el tipo `SyncOperation` (operationId, inspectionId, tipo create/update, payload, createdAt, estado e
-intentos) y la llave de localStorage. También creé `src/lib/sync/queue.ts`, la cola guardada en
-localStorage con `enqueueOperation()`, `syncQueue()` y funciones auxiliares para leer, actualizar y
-quitar operaciones. El trabajo está en la rama `fernanda/semana-5-persistencia`.
+## Integrante: Jarumi Guadaluoe Flores Osorio — Semana 5
 
-### Decisión que puedo explicar
-**Por qué el operationId evita duplicados:** el cliente genera un `operationId` único para cada
-operación. Antes de agregar una a la cola, `enqueueOperation()` revisa si ya existe una con ese mismo
-ID y, si existe, no la agrega. Así, un doble clic o un reintento no crea dos registros de la misma
-inspección.
+- Fecha de verificación: 4 de octubre de 2026.
+- Rama: `jarumi/semana-5-pruebas`.
+- Commits: [`f67739a75248304cb19e53e70d08aba3e51664c9`](https://github.com/FerSalazar726/PWA-Equipo-4/commit/f67739a75248304cb19e53e70d08aba3e51664c9) merge de la rama de Oscar (`oscar/semana-5-conflictos`), [`d93f3b5f8048708f66425039df8b07aabd16e194`](https://github.com/FerSalazar726/PWA-Equipo-4/commit/d93f3b5f8048708f66425039df8b07aabd16e194) "Agrega politica de sincronizacion documentada y pruebas".
+- Contribución concreta: se creó `docs/sync-policy.md`, documentando persistencia en localStorage, idempotencia por `operationId`, reintentos con límite de 3 intentos, y la política de resolución de conflictos "el cambio más reciente gana". Se creó `tests/sync.spec.ts` con 6 pruebas: que `enqueueOperation` no duplica una operación con el mismo `operationId`, que `syncQueue` marca una operación como `synced` cuando el envío es exitoso, que reintenta y cuenta los intentos cuando falla, que deja de reintentar después de 3 intentos, y dos sobre `resolveConflict` (elige local o remoto según cuál es más reciente). Se usó un `localStorage` simulado con un `Map`, asignado a `globalThis.window` antes de cada prueba.
+- Decisión técnica y por qué: se simula `localStorage` con un objeto que envuelve un `Map` en vez de usar un navegador real, porque las pruebas corren en Node (sin DOM); el `Map` imita el comportamiento de `getItem`/`setItem`/`removeItem` lo suficiente para que `queue.ts` no sepa la diferencia, y permite que cada prueba empiece con una cola vacía (se reasigna en `beforeEach`) sin depender de un navegador.
+- Comando o prueba que ejecuté y resultado real: `npm test`. Resultado final: `51/51 pruebas pasando`, incluidas las 6 de `sync.spec.ts`.
+- Qué verifica esa prueba y qué no verifica: verifica la lógica de la cola (idempotencia, reintentos, límite de intentos) y la lógica de resolución de conflictos de forma aislada, con un `localStorage` simulado y sin red real. No verifica que la sincronización funcione con un backend real, ni que `localStorage` se comporte igual en todos los navegadores, ni qué pasa si dos pestañas del navegador escriben la cola al mismo tiempo.
+- Limitación, dificultad o riesgo que identifiqué: al traer la rama de Oscar (`oscar/semana-5-conflictos`) encontré que había creado su propia versión de `schema.ts` y `queue.ts`, con un diseño distinto al de Fernanda ya integrado en `main` (otros nombres de función, otros estados posibles, sin campo `attempts`). Mantener la versión de Oscar habría roto la prueba que pide la guía, así que conservé la versión de `main`/Fernanda y descarté la de Oscar en esos dos archivos (su aporte real, `conflict-policy.ts`, no tuvo conflicto). También encontré que el merge trajo una versión vieja de `tests/sync.spec.ts` (con el esquema descartado de Oscar, y sin siquiera importar `assert`), que reemplacé por la versión correcta. Además, `src/lib/sync/queue.ts` importaba `schema.ts` usando el alias `@/lib/storage/schema`, que solo funciona cuando TypeScript revisa tipos pero no cuando Node ejecuta el código ya compilado; tuve que cambiarlo a una ruta relativa (`../storage/schema`) para que las pruebas corrieran. Reporté la duplicación de diseño a mi equipo.
+- Uso de IA: usé Claude (Anthropic) para dudas técnicas de Git (resolver el conflicto de merge `add/add`, cerrar el merge, limpiar credenciales), para comparar las dos versiones distintas de `schema.ts`/`queue.ts` y decidir cuál conservar, para diagnosticar el error `Cannot find module '@/lib/storage/schema'`, La decisión final de qué versión del esquema conservar, la ejecución de las pruebas y la verificación de que todo compilara las hice yo, revisando la salida de la terminal en cada paso.
 
-**Por qué el límite de 3 intentos:** una operación que falla siempre (por ejemplo, datos inválidos)
-no debe reintentarse sin fin porque gastaría red y batería. Después de 3 intentos acumulados queda
-en estado `error` con su `lastError`, para revisarla. Además, si `enviar()` lanza una excepción por
-falta de red, el intento se cuenta igual y el ciclo continúa con las demás operaciones.
+## Integrante: María Fernanda Fuentes Abascal — Semana 5
 
-### Prueba que ejecuté
-Con `npm run dev`, abrí `http://localhost:3000` y, en la consola de DevTools, guardé una operación de
-prueba en la llave `inspecciones-lab:sync-queue:v1`. Al recargar la página, en Application >
-Local Storage la llave seguía guardada con [describe lo que viste]. Evidencia: [captura].
-
-### Limitación
-Todavía no existe un backend real que reciba las operaciones, así que `syncQueue()` solo se probó con
-una función de envío simulada. Además, la idempotencia está solo del lado del cliente: el backend
-también deberá reconocer el `operationId` para no duplicar registros.
-
-### Uso de IA
-Usé Claude como apoyo para revisar mi código y proponer mejoras (manejo de errores de red en
-`syncQueue` y de cuota llena en `writeQueue`), y para guiarme con los comandos de Git en PowerShell.
-Revisé el código resultante, lo copié a mi proyecto y [entendí cómo funciona / lo probé].
+- Fecha de verificación: 4 de octubre de 2026.
+- Rama: `fernanda/semana-5-persistencia`.
+- Commits: `17e01fb` (esquema y cola de sincronización), `0faa385` (esta sección de evidencia). Integrados a `main` por los Pull Requests #8 y #10.
+- Contribución concreta: creé `src/lib/storage/schema.ts`, que define el tipo `SyncOperation` (operationId, inspectionId, tipo create/update, payload, createdAt, estado e intentos) y la llave de localStorage `inspecciones-lab:sync-queue:v1`. También creé `src/lib/sync/queue.ts`, la cola guardada en localStorage con `enqueueOperation()`, `syncQueue()` y funciones para leer, actualizar y quitar operaciones.
+- Decisión técnica y por qué: el `operationId` lo genera el cliente y `enqueueOperation()` revisa si ya existe antes de agregar, así un doble clic o un reintento no duplica la operación. El límite es de 3 intentos acumulados (se cuentan entre llamadas a `syncQueue`) para que una operación que siempre falla no se reintente sin fin; después queda en `error` con su `lastError`. Además, si `enviar()` lanza una excepción por falta de red, el intento se cuenta igual y el ciclo continúa con las demás operaciones.
+- Comando o prueba que ejecutué y resultado real: `npx tsc --noEmit` sin errores y `npm test` en la rama `jarumi/semana-5-pruebas`, con 51/51 pruebas pasando, incluidas las de `sync.spec.ts`. [Si hiciste la prueba del navegador, agrega: En `http://localhost:3000` guardé una operación de prueba en `inspecciones-lab:sync-queue:v1` y, al recargar, la llave seguía en Application > Local Storage.]
+- Qué verifica esa prueba y qué no verifica: verifica la lógica de la cola (idempotencia, reintentos, límite de intentos) y que el código compila con los tipos del esquema. No verifica el envío a un servidor real, porque `syncQueue()` solo se probó con una función de envío simulada.
+- Limitación, dificultad o riesgo que identifiqué: todavía no hay un backend real que reciba las operaciones, y la idempotencia está solo del lado del cliente: el backend también deberá reconocer el `operationId` para no duplicar registros. Además, la rama `oscar/semana-5-conflictos` traía su propia versión de `schema.ts` y `queue.ts`, con otros estados y sin `attempts`, por haberse creado antes de que mi PR llegara a `main`. Jarumi conservó mi versión al integrar, y también ajustó el import a ruta relativa para que compilen las pruebas.
+- Uso de IA: usé Claude para revisar mi código y proponer mejoras (manejo de errores de red en `syncQueue` y de cuota llena en `writeQueue`), para guiarme con los comandos de Git en PowerShell y para revisar la integración de las ramas de Oscar y Jarumi. Revisé el código resultante, lo copié a mi proyecto y [completa con lo que sea cierto: lo probé / entendí cómo funciona].
