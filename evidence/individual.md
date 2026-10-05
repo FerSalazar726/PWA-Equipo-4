@@ -171,3 +171,37 @@ Uso de IA: usé Claude (Anthropic) para ayudarme a estructurar y redactar el bor
 - Qué verifica esa prueba y qué no verifica: las pruebas confirman que las funciones de datos regresan los registros correctos (y `null` para un id inexistente) y que el listado no declara `"use client"` mientras el detalle sí. No demuestran que el listado se renderice realmente en el servidor en cada petición: la prueba solo revisa el texto del archivo, y de hecho no detectó que la página había quedado estática; eso lo encontró la tabla del build.
 - Limitación, dificultad o riesgo que identifiqué: los datos son un arreglo en memoria, no una base de datos real, así que la "consulta" es simulada y `force-dynamic` no aporta un costo real todavía; con una base de datos, renderizar en cada petición sí tendría costo y habría que evaluar caché o revalidación. También me equivoqué al crear el `page.tsx` del listado dentro de `app/api/inspecciones/` en vez de `app/inspecciones/`, lo que dio un 404; borré y recreé las carpetas como hermanas.
 - Uso de IA: usé Claude (Anthropic) para guiarme en la estructura de carpetas, diagnosticar el 404 y la diferencia entre página estática y dinámica en la tabla del build, y redactar esta sección. Ejecuté cada comando, revisé cada resultado en mi terminal y navegador, y verifiqué en el build que el cambio surtió efecto.
+
+## Integrante: María Fernanda Fuentes Abascal - semana 5 
+ ## Mi contribución
+Implementé la base de la persistencia offline de la PWA. Creé `src/lib/storage/schema.ts`, que define
+el tipo `SyncOperation` (operationId, inspectionId, tipo create/update, payload, createdAt, estado e
+intentos) y la llave de localStorage. También creé `src/lib/sync/queue.ts`, la cola guardada en
+localStorage con `enqueueOperation()`, `syncQueue()` y funciones auxiliares para leer, actualizar y
+quitar operaciones. El trabajo está en la rama `fernanda/semana-5-persistencia`.
+
+### Decisión que puedo explicar
+**Por qué el operationId evita duplicados:** el cliente genera un `operationId` único para cada
+operación. Antes de agregar una a la cola, `enqueueOperation()` revisa si ya existe una con ese mismo
+ID y, si existe, no la agrega. Así, un doble clic o un reintento no crea dos registros de la misma
+inspección.
+
+**Por qué el límite de 3 intentos:** una operación que falla siempre (por ejemplo, datos inválidos)
+no debe reintentarse sin fin porque gastaría red y batería. Después de 3 intentos acumulados queda
+en estado `error` con su `lastError`, para revisarla. Además, si `enviar()` lanza una excepción por
+falta de red, el intento se cuenta igual y el ciclo continúa con las demás operaciones.
+
+### Prueba que ejecuté
+Con `npm run dev`, abrí `http://localhost:3000` y, en la consola de DevTools, guardé una operación de
+prueba en la llave `inspecciones-lab:sync-queue:v1`. Al recargar la página, en Application >
+Local Storage la llave seguía guardada con [describe lo que viste]. Evidencia: [captura].
+
+### Limitación
+Todavía no existe un backend real que reciba las operaciones, así que `syncQueue()` solo se probó con
+una función de envío simulada. Además, la idempotencia está solo del lado del cliente: el backend
+también deberá reconocer el `operationId` para no duplicar registros.
+
+### Uso de IA
+Usé Claude como apoyo para revisar mi código y proponer mejoras (manejo de errores de red en
+`syncQueue` y de cuota llena en `writeQueue`), y para guiarme con los comandos de Git en PowerShell.
+Revisé el código resultante, lo copié a mi proyecto y [entendí cómo funciona / lo probé].
