@@ -149,6 +149,23 @@ Uso de IA: usé Claude (Anthropic) para ayudarme a estructurar y redactar el bor
 - Uso de IA: Codex (OpenAI) interpretó la guía, implementó los cambios, ejecutó pruebas y redactó esta evidencia. Estos resultados son comprobaciones automatizadas, no una revisión manual realizada por Oscar.
 - Validación humana de Oscar: pendiente de revisar el diff y reproducir las rutas y estados antes de la entrega.
 
+## Semana 5: Oscar - conflictos y estado de sincronización
+
+- Fecha de implementación: 4 de octubre de 2026.
+- Rama: `oscar/semana-5-conflictos`.
+- Contribución: `src/lib/storage/schema.ts` define el payload de inspección y la operación local; `src/lib/sync/queue.ts` expone la lectura segura de operaciones `pending`; `src/lib/sync/conflict-policy.ts` decide entre payload local y remoto por timestamp. `SyncStatusBadge` en `src/components/app-shell.tsx` informa el número de cambios pendientes y se actualiza al cargar, al recibir `storage` y cada dos segundos. Se añadieron sus estilos en `src/app/globals.css`.
+- Decisión: se usa last-write-wins porque produce una resolución determinista sencilla cuando el cliente reconecta. Si las fechas empatan, gana el cambio local para no descartar silenciosamente una edición hecha en el dispositivo. Fusionar campos por separado requeriría reglas de dominio para cada campo y podría formar combinaciones que ningún usuario guardó como un todo.
+- Comprobación ejecutada: `npm run verify` aprobó 50/50 pruebas y el build de producción, incluidas cinco nuevas para los dos ganadores posibles, empate, fecha inválida y filtrado de operaciones pendientes. Para la comprobación manual que pide la guía, iniciar `npm run dev`, abrir la app y ejecutar en DevTools:
+
+  ```js
+  localStorage.setItem("inspection-sync-operations", JSON.stringify([{operationId:"demo-001",inspectionId:"inspection-001",payload:{inspectionId:"inspection-001",status:"attention",findings:1,summary:"Cambio local"},createdAt:new Date().toISOString(),status:"pending"}])); location.reload();
+  ```
+
+  Oscar ejecutó la comprobación manual en Chrome y confirmó visualmente el mensaje “1 cambio pendiente de sincronizar” después de recargar (captura compartida el 4 de octubre de 2026). La consola mostró además un error separado: el service worker intentó guardar en caché una solicitud `chrome-extension://`; no impidió mostrar el badge. Para limpiar el dato de prueba, ejecutar `localStorage.removeItem("inspection-sync-operations")` y recargar. La rama inicial no contenía los módulos `schema.ts` ni `queue.ts` mencionados en la guía, así que se añadieron como contrato mínimo. La demo `actividad-semana-5` usa la clave `operations` y representa ventas independientes; no comparte datos ni contrato con la PWA.
+- Limitación: last-write-wins puede perder un cambio legítimo si dos ediciones ocurren casi al mismo tiempo, y depende de relojes razonablemente correctos. La cola local incorporada expone lectura y conteo, pero no implementa envío real a servidor ni registra inspecciones desde el formulario actual.
+- Uso de IA: Codex (OpenAI) interpretó el PDF, creó la rama e implementó los módulos, el badge y esta documentación. `npm run verify` encontró primero que el alias `@/` no se resuelve en los tests CommonJS; se cambiaron las importaciones internas nuevas a rutas relativas.
+- Validación humana de Oscar: pendiente de revisar el diff, poblar la cola desde DevTools, comprobar el aviso y explicar la decisión y sus límites antes de entregar.
+
 ## Integrante: Jarumi [su apellido] — Semana 4
 
 - Fecha de verificación: 27 de septiembre de 2026.
