@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { getPendingOperations } from "../lib/sync/queue";
 
 function LabMark() {
   return (
@@ -134,6 +135,29 @@ export function OfflineBanner() {
   );
 }
 
+export function SyncStatusBadge() {
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => setPendingCount(getPendingOperations().length);
+    updateCount();
+    window.addEventListener("storage", updateCount);
+    const interval = window.setInterval(updateCount, 2000);
+    return () => {
+      window.removeEventListener("storage", updateCount);
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  if (pendingCount === 0) return null;
+
+  return (
+    <div role="status" className="sync-badge" aria-live="polite">
+      {pendingCount} {pendingCount === 1 ? "cambio pendiente" : "cambios pendientes"} de sincronizar
+    </div>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "/";
   return (
@@ -141,6 +165,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
       <Header pathname={pathname} />
       <OfflineBanner />
+      <SyncStatusBadge />
       <div className="shell-content" id="contenido" tabIndex={-1}>{children}</div>
     </>
   );
