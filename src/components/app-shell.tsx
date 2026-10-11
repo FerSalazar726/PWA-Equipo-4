@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getPendingOperations } from "../lib/sync/queue";
+import { NotificationPermissionButton } from "./notification-permission-button";
 
 function LabMark() {
   return (
@@ -164,6 +165,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <>
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
       <Header pathname={pathname} />
+      <NotificationPermissionButton />
       <OfflineBanner />
       <SyncStatusBadge />
       <div className="shell-content" id="contenido" tabIndex={-1}>{children}</div>
