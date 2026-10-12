@@ -12,13 +12,14 @@
     "baseUrl": "..",
     "paths": { "@/*": ["src/*"] }
   },
-    "include": [
+  "include": [
     "app-shell.spec.tsx",
     "manifest.spec.ts",
     "service-worker.spec.ts",
     "offline.spec.tsx",
     "rendering.spec.ts",
     "sync.spec.ts",
+    "capabilities.spec.ts",
     "../src/components/app-shell.tsx",
     "../src/lib/sync/queue.ts",
     "../src/lib/pwa/register-service-worker.ts"
