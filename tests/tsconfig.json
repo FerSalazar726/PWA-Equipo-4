@@ -13,13 +13,10 @@
     "paths": { "@/*": ["src/*"] }
   },
   "include": [
-    "app-shell.spec.tsx",
-    "manifest.spec.ts",
-    "service-worker.spec.ts",
-    "offline.spec.tsx",
-    "rendering.spec.ts",
-    "sync.spec.ts",
-    "capabilities.spec.ts",
+    "unit/**/*.ts",
+    "unit/**/*.tsx",
+    "integration/**/*.ts",
+    "integration/**/*.tsx",
     "../src/components/app-shell.tsx",
     "../src/lib/sync/queue.ts",
     "../src/lib/pwa/register-service-worker.ts"

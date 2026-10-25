@@ -4,9 +4,9 @@ import {
   enqueueOperation,
   getPendingOperations,
   syncQueue,
-} from "../src/lib/sync/queue";
-import type { SyncOperation } from "../src/lib/storage/schema";
-import { resolveConflict } from "../src/lib/sync/conflict-policy";
+} from "../../src/lib/sync/queue";
+import type { SyncOperation } from "../../src/lib/storage/schema";
+import { resolveConflict } from "../../src/lib/sync/conflict-policy";
 
 function createLocalStorageMock() {
   const store = new Map<string, string>();
