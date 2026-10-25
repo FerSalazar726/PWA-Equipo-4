@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 
-const source = readFileSync(new URL("../.test-build/src/lib/pwa/register-service-worker.js", import.meta.url), "utf8");
+const source = readFileSync(new URL("../../.test-build/src/lib/pwa/register-service-worker.js", import.meta.url), "utf8");
 
 function setup(readyState, supported = true) {
   const calls = [];
