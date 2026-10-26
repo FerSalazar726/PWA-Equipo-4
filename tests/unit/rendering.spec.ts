@@ -5,7 +5,7 @@ import path from "node:path";
 import {
   getInspections,
   getInspectionById,
-} from "../src/lib/data/inspections";
+} from "../../src/lib/data/inspections";
 
 test("getInspections regresa los 3 registros sinteticos", async () => {
   const datos = await getInspections();
