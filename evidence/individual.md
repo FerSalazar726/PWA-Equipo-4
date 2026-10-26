@@ -285,3 +285,22 @@ oscar/semana-6-notificaciones
 - Limitación, dificultad o riesgo que identifiqué: mis pruebas dependían del trabajo de dos compañeros. Los scripts y las pruebas unitarias de Fernanda estaban en su rama `fernanda/semana-8-unit`, pero `origin/main` todavía no los traía (`git merge origin/main` respondió "Already up to date"), así que tuve que traer su rama directamente. Las pruebas de integración de Oscar llegaron después, por lo que tuve que esperar para poder comprobar los números del documento en lugar de dejar cantidades sin verificar. Otra limitación es que el detalle de un id inexistente responde HTTP 200 porque el 404 se resuelve en el navegador (CSR); lo dejé documentado en una prueba como límite conocido y no como algo resuelto.
 - Uso de IA: usé Claude  para dar formato legible a los archivos de la guía que venían en una sola línea, para interpretar los resultados de las pruebas y detectar que faltaban las pruebas de integración, y para redactar borradores de esta sección y de mensajes al equipo. Las partes influenciadas por IA son esas ayudas y el formato del texto. Validación propia: ejecuté yo cada comando, leí los resultados de las tres suites antes de commitear y comprobé que coincidían con las cantidades del documento.
 main
+
+## Semana 8 — María Fernanda Fuentes Abascal (capa unitaria y runner)
+
+**Mi SHA:** `d0c606ae7de75abf74cef98f528326a7a281fef4`
+
+**Qué hice**
+Me encargué de la base de la pirámide. Moví las 9 pruebas que ya teníamos a `tests/unit/` y arreglé sus imports. Creé `scripts/run-tests.mjs` y dejé listos los scripts `test:unit`, `test:integration`, `test:e2e` y `test:all`. Agregué 21 pruebas unitarias nuevas: 6 de `conflict-policy`, 8 de la cola offline y 7 de los datos de inspecciones.
+
+**Decisión técnica**
+Usé el runner que ya trae Node (`node:test`) y no instalé Jest ni Playwright. En otras palabras, no agregué dependencias nuevas. Hice un runner por carpetas que falla si una carpeta no existe o está vacía. Así evito que el CI salga en verde sin correr nada. También me quedé con la parte compartida (`package.json`, `tests/tsconfig.json`) para que Oscar y Jarumi solo agregaran archivos en sus carpetas y no tuviéramos conflictos.
+
+**Resultado de la corrida**
+Corrí `npm ci`, `npm test`, `npm run build`, `npm run test:e2e` y `npm run verify` sobre `main` ya integrado. Salieron 88 pruebas unitarias, 19 de integración y 11 e2e, todas pasando. El build y `verify` terminaron bien.
+
+**Limitación**
+Las pruebas e2e hacen peticiones HTTP contra `next start`, pero no abren un navegador real. Entonces no revisan clics ni lo que se ve en pantalla. Además, el detalle de un id que no existe responde 200 porque el 404 se resuelve en el navegador, y eso lo dejamos documentado como límite conocido. Lo siguiente sería agregar Playwright.
+
+**Uso de IA**
+Usé Claude como apoyo para planear cómo repartir la pirámide y para escribir el código de las pruebas y del runner. Yo creé los archivos, los corrí en mi máquina, revisé que pasaran y resolví los conflictos de los PR. Los resultados de arriba salieron de mis corridas reales.

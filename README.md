@@ -135,3 +135,32 @@ Resultado: `npm test` con 45/45 pruebas pasando, `npm run verify` en verde, y la
 ## Cierre de la Semana 6 - María Fernanda Fuentes Abascal
 
 Se integraron las tres ramas (`fernanda/semana-6-capacidades`, `jarumi/semana-6-docs-tests`, `oscar/semana-6-notificaciones`) por Pull Request. Capacidades agregadas: cámara y geolocalización con permisos mínimos (`src/lib/device/`), notificaciones del navegador con botón de activación (`src/lib/notifications/`, `src/components/notification-permission-button.tsx`), documentadas en `docs/capabilities.md` y cubiertas por 16 pruebas nuevas en `tests/capabilities.spec.ts`. Resultado: 67/67 pruebas y build correcto. Commit final: `2bd984283bf2da3dd6b368faf6dc728cde1e1aa0`, tag `semana-6-entrega`.
+
+## Semana 8 — Pirámide de pruebas e integración continua
+
+El proyecto tiene tres niveles de pruebas:
+
+- `tests/unit/`: 88 pruebas unitarias (componentes, cola offline, política de conflictos, datos, service worker, manifest).
+- `tests/integration/`: 19 pruebas de integración (API con capa de datos, listado SSR, flujo de sincronización, archivos de la PWA).
+- `tests/e2e/`: 11 pruebas de extremo a extremo contra `next start`, por HTTP y sin navegador.
+
+La estrategia y sus límites están en [`docs/test-strategy.md`](docs/test-strategy.md).
+
+### Cómo ejecutarlas
+
+```bash
+npm ci
+npm test              # starter + unitarias + integración
+npm run build
+npm run test:e2e      # requiere haber corrido build antes
+npm run verify        # test + build + reporte
+npm run test:all      # todo en orden
+```
+
+### CI
+
+El workflow `.github/workflows/academic-evaluation.yml` corre en cada push y pull request: instala, ejecuta unitarias, integración, `verify` y e2e, y sube `reports/verification.json` como evidencia.
+
+### Resultado
+
+88 unitarias, 19 de integración y 11 e2e pasando; el build y `verify` terminan bien.

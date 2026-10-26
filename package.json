@@ -7,7 +7,7 @@
   "build": "next build",
   "start": "next start",
   "preview:states": "tsc --project tests/tsconfig.json && node scripts/preview-states.mjs",
-  "test": "node tests/starter.spec.mjs && npm run test:unit",
+  "test": "node tests/starter.spec.mjs && npm run test:unit && npm run test:integration",
   "verify": "node scripts/verify.mjs",
   "test:unit": "tsc --project tests/tsconfig.json && node scripts/run-tests.mjs .test-build/tests/unit tests/unit",
   "test:integration": "tsc --project tests/tsconfig.json && node scripts/run-tests.mjs .test-build/tests/integration",
