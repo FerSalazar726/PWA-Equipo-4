@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { AppShell, Header, LoadingState, ErrorState, EmptyState } from "../src/components/app-shell";
-import HomePage from "../src/app/page";
+import { AppShell, Header, LoadingState, ErrorState, EmptyState } from "../../src/components/app-shell";
+import HomePage from "../../src/app/page";
 
 test("Header ofrece Inicio y Laboratorios en una navegación identificable", () => {
   const html = renderToStaticMarkup(<Header />);

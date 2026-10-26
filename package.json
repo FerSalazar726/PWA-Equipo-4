@@ -3,13 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "preview:states": "tsc --project tests/tsconfig.json && node scripts/preview-states.mjs",
-    "test": "node tests/starter.spec.mjs && tsc --project tests/tsconfig.json && node --test .test-build/tests/app-shell.spec.js .test-build/tests/manifest.spec.js .test-build/tests/service-worker.spec.js .test-build/tests/offline.spec.js .test-build/tests/rendering.spec.js .test-build/tests/sync.spec.js .test-build/tests/capabilities.spec.js tests/design.spec.mjs tests/register-sw.spec.mjs",
-    "verify": "node scripts/verify.mjs"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "preview:states": "tsc --project tests/tsconfig.json && node scripts/preview-states.mjs",
+  "test": "node tests/starter.spec.mjs && npm run test:unit",
+  "verify": "node scripts/verify.mjs",
+  "test:unit": "tsc --project tests/tsconfig.json && node scripts/run-tests.mjs .test-build/tests/unit tests/unit",
+  "test:integration": "tsc --project tests/tsconfig.json && node scripts/run-tests.mjs .test-build/tests/integration",
+  "test:e2e": "node scripts/run-tests.mjs tests/e2e",
+  "test:all": "npm test && npm run test:integration && npm run build && npm run test:e2e"
+},
   "dependencies": {
     "next": "14.2.35",
     "react": "18.3.1",

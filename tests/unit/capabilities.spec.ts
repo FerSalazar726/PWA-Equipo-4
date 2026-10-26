@@ -4,17 +4,17 @@ import {
   isCameraSupported,
   requestCamera,
   stopCamera,
-} from "../src/lib/device/camera";
+} from "../../src/lib/device/camera";
 import {
   isGeolocationSupported,
   requestLocation,
-} from "../src/lib/device/geolocation";
+} from "../../src/lib/device/geolocation";
 import {
   isNotificationSupported,
   getNotificationPermission,
   requestNotificationPermission,
   showNotification,
-} from "../src/lib/notifications/client";
+} from "../../src/lib/notifications/client";
 
 const globalAny = globalThis as any;
 
