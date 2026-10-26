@@ -246,6 +246,7 @@ oscar/semana-6-notificaciones
 - Qué verifica esa prueba y qué no verifica: las pruebas de Jarumi confirman que mis funciones regresan el resultado correcto (soportado/no soportado, concedido/negado/timeout) usando objetos simulados de `navigator`. No verifican el comportamiento real de un navegador ni que el usuario realmente vea el diálogo de permiso del sistema operativo.
 - Limitación, dificultad o riesgo que identifiqué: la cámara solo expone el permiso y el stream; no hay todavía una vista previa de video en pantalla. Integrar las tres ramas esta semana (Jarumi copió mi `client.ts`... digo, el de Oscar, a su rama para poder probarlo) salió limpio porque el archivo quedó idéntico en ambas ramas; el único conflicto real fue en este mismo archivo de evidencia, resuelto conservando las tres secciones.
 - Uso de IA: usé Claude (Anthropic) para diseñar el reparto de la semana entre los tres, escribir el código de `camera.ts` y `geolocation.ts`, guiarme en los comandos de Git/PowerShell y revisar que la integración de las tres ramas no rompiera nada. Yo ejecuté cada comando, revisé cada resultado en mi terminal y decidí el orden de merge.
+
 ## Integrante: Oscar Flores Cerqueda — Semana 8
 
 - Fecha de verificación: 25 de octubre de 2026.
