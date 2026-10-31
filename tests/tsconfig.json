@@ -17,6 +17,7 @@
     "unit/**/*.tsx",
     "integration/**/*.ts",
     "integration/**/*.tsx",
+    "security.spec.ts",
     "../src/components/app-shell.tsx",
     "../src/lib/sync/queue.ts",
     "../src/lib/pwa/register-service-worker.ts"
