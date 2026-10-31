@@ -11,14 +11,19 @@ const PATRONES: Array<{ kind: PIIKind; regex: RegExp }> = [
   { kind: "curp", regex: /\b[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d\b/gi },
   {
     kind: "telefono",
-    regex: /(?<!\d)(?:\+?52[\s.-]?)?(?:\d{3}[\s.-]?\d{3}[\s.-]?\d{4}|\d{2}[\s.-]?\d{4}[\s.-]?\d{4})(?!\d)/g,
+    regex: /(?:\+?52[\s.-]?)?(?:\d{3}[\s.-]?\d{3}[\s.-]?\d{4}|\d{2}[\s.-]?\d{4}[\s.-]?\d{4})(?!\d)/g,
   },
 ];
 
 export function findPII(texto: string): PIIFinding[] {
   const encontrados: PIIFinding[] = [];
   for (const { kind, regex } of PATRONES) {
-    for (const coincidencia of texto.matchAll(regex)) {
+    const buscador = new RegExp(regex.source, regex.flags);
+    let coincidencia: RegExpExecArray | null;
+    while ((coincidencia = buscador.exec(texto)) !== null) {
+      // Un telefono no puede empezar a la mitad de un numero mas largo.
+      const anterior = texto.charAt(coincidencia.index - 1);
+      if (kind === "telefono" && /\d/.test(anterior)) continue;
       encontrados.push({ kind, match: coincidencia[0] });
     }
   }
