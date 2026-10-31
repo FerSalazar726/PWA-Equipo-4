@@ -1,4 +1,5 @@
 import { SyncOperation, STORAGE_KEY } from "../storage/schema";
+import { isSyncOperation } from "../security/validation";
 
 function hasLocalStorage(): boolean {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -9,7 +10,11 @@ export function readQueue(): SyncOperation[] {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as SyncOperation[];
+    const datos: unknown = JSON.parse(raw);
+    // localStorage puede haber sido modificado: si no es una lista, se ignora,
+    // y las entradas con forma invalida se descartan una por una.
+    if (!Array.isArray(datos)) return [];
+    return datos.filter(isSyncOperation);
   } catch {
     return [];
   }
@@ -25,13 +30,17 @@ function writeQueue(queue: SyncOperation[]): void {
   }
 }
 
-export function enqueueOperation(operation: SyncOperation): void {
+// Regresa false si la operacion no es valida (por ejemplo, si trae datos
+// personales o campos inesperados): en ese caso no se guarda nada.
+export function enqueueOperation(operation: SyncOperation): boolean {
+  if (!isSyncOperation(operation)) return false;
   const queue = readQueue();
   // Idempotencia: si ya existe una operacion con el mismo operationId, no se duplica.
   const yaExiste = queue.some((op) => op.operationId === operation.operationId);
-  if (yaExiste) return;
+  if (yaExiste) return true;
   queue.push(operation);
   writeQueue(queue);
+  return true;
 }
 
 export function updateOperation(
