@@ -3,7 +3,8 @@ import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 // Ejecuta con el test runner de Node todos los archivos *.spec.js|mjs|cjs
-// que haya dentro de las carpetas indicadas (busca tambien en subcarpetas).
+// que haya dentro de las carpetas indicadas (busca tambien en subcarpetas)
+// o los archivos de prueba que se indiquen directamente.
 // Si una carpeta no existe o no tiene pruebas, falla: asi no hay "verdes vacios".
 const root = resolve(import.meta.dirname, "..");
 const carpetas = process.argv.slice(2);
@@ -33,7 +34,9 @@ for (const carpeta of carpetas) {
     console.error(`No existe la carpeta: ${carpeta}`);
     process.exit(1);
   }
-  archivos.push(...buscarPruebas(absoluta));
+  // Acepta carpetas (busca pruebas dentro) o un archivo de prueba puntual.
+  if (statSync(absoluta).isFile()) archivos.push(absoluta);
+  else archivos.push(...buscarPruebas(absoluta));
 }
 
 if (archivos.length === 0) {
