@@ -21,6 +21,8 @@ jobs:
         run: npm run test:unit
       - name: Pruebas de integración
         run: npm run test:integration
+      - name: Pruebas de seguridad
+        run: npm run test:security
       - name: Verificación completa (estructura, pruebas y build)
         run: npm run verify
       - name: Pruebas E2E contra el build de producción
