@@ -304,3 +304,16 @@ Las pruebas e2e hacen peticiones HTTP contra `next start`, pero no abren un nave
 
 **Uso de IA**
 Usé Claude como apoyo para planear cómo repartir la pirámide y para escribir el código de las pruebas y del runner. Yo creé los archivos, los corrí en mi máquina, revisé que pasaran y resolví los conflictos de los PR. Los resultados de arriba salieron de mis corridas reales.
+## Integrante: Oscar - Semana 9
+
+- Fecha: 2026-11-01. Rama: `codex/oscar-semana-9-amenazas`, creada desde `origin/main` con la seguridad de Fernanda ya integrada.
+- Commit de las pruebas de integracion: `c9ce39b5635a2cef72100e56cdcde20ab8046d4a`.
+- Entregables: `docs/threat-model.md`, `public/robots.txt`, 12 pruebas nuevas en `tests/integration/seguridad.spec.ts` y el paso `test:security` del workflow academico.
+- Decision tecnica: comprobar middleware, API y cola reales con el runner de Node que ya usa el proyecto. Se simula solo localStorage para introducir datos manipulados y comprobar que no llegan al callback de sincronizacion. No se modifico `src/` ni se agregaron dependencias al proyecto.
+- Modelo: STRIDE organiza suplantacion, manipulacion, repudio, divulgacion de informacion, denegacion de servicio y elevacion de privilegios. El documento relaciona activos y fronteras de confianza con controles, evidencia y riesgos residuales; robots.txt es una peticion a rastreadores, no autorizacion de acceso.
+- Validacion automatica ejecutada por Codex: `npm run verify` termino en `pass`, con starter aprobado, 88/88 unitarias, 31/31 de integracion, 33/33 de seguridad y build de produccion correcto.
+- Compatibilidad con Jarumi: se copio temporalmente su `tests/e2e/seguridad.spec.mjs` desde `origin/jarumi/semana-9-privacidad` y se ejecuto junto a las 11 E2E de main: 20/20 aprobadas. Se elimino la copia temporal; esas 9 pruebas pertenecen al PR de Jarumi. Las pruebas de robots.txt y de cabeceras respondieron correctamente.
+- Dificultad real: el primer intento E2E se lanzo antes de terminar el build y fallo con "No hay build de produccion". Se repitio despues de finalizar el build y pasaron las 20 pruebas.
+- Auditoria: `npm audit --json` termino con codigo 1 y 3 dependencias vulnerables: next (critical), postcss (high) y source-map-js (high). T11 contiene versiones y resumen reales. No se aplico `npm audit fix --force`; el riesgo sigue abierto y requiere actualizar dependencias con pruebas.
+- Limites: las integraciones llaman a los manejadores reales y las E2E hacen HTTP, pero no abren un navegador, no revisan la consola CSP ni comprueban permisos interactivos o el service worker offline activo. No se afirma que estas pruebas eliminen las vulnerabilidades del audit.
+- Uso de IA: Codex (OpenAI) consulto la guia PDF, incorporo sus bloques, completo T11 con npm audit, ejecuto las comprobaciones y redacto esta evidencia. Los resultados anteriores fueron observados por Codex; no se atribuyen a una revision manual de Oscar. La revision personal del diff y la comprension del modelo por Oscar quedan pendientes antes de la entrega academica.
