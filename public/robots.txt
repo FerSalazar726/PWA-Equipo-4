@@ -1,0 +1,7 @@
+# robots.txt: pide a los buscadores que no indexen las rutas internas.
+# Ojo: este archivo es publico y solo se respeta por cortesia.
+# NO es un control de seguridad: la proteccion real esta en la validacion y las cabeceras.
+User-agent: *
+Disallow: /api/
+Disallow: /inspecciones/
+Allow: /
