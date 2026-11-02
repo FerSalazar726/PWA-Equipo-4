@@ -164,3 +164,46 @@ El workflow `.github/workflows/academic-evaluation.yml` corre en cada push y pul
 ### Resultado
 
 88 unitarias, 19 de integración y 11 e2e pasando; el build y `verify` terminan bien.
+
+
+## Semana 9 — Modelo de amenazas y privacidad aplicada
+
+Esta semana se agregó una capa de seguridad y privacidad. Todo sigue usando datos sintéticos.
+
+### Qué se agregó
+
+- `docs/threat-model.md`: modelo de amenazas (STRIDE) con controles, evidencia, decisiones, fallos y límites.
+- `docs/privacy-data-inventory.md`: inventario de datos, permisos, retención y riesgos de privacidad.
+- `src/lib/security/`: validación por lista permitida (`validation.ts`), detección de datos personales (`privacy.ts`),
+  CSP y cabeceras de seguridad (`headers.ts`) y detección de secretos (`secrets.ts`).
+- `src/middleware.ts`: aplica las cabeceras de seguridad a todas las respuestas.
+- `public/robots.txt`: pide no indexar `/api/` ni `/inspecciones/` (no es un control de seguridad).
+- `.env.example`: plantilla sin valores; `.gitignore` ignora los `.env`.
+- `tests/security.spec.ts`, `tests/integration/seguridad.spec.ts` y `tests/e2e/seguridad.spec.mjs`.
+
+### Cómo ejecutarlo
+
+```bash
+npm ci
+npm test                  # starter + unitarias + integración + seguridad
+npm run test:security     # solo las pruebas de seguridad
+npm run build
+npm run test:e2e          # requiere haber corrido build antes
+npm run verify            # test + build + reporte
+```
+
+### Qué cambió en el código existente
+
+- `src/app/api/inspecciones/[id]/route.ts` valida el id antes de consultar los datos.
+- `src/lib/sync/queue.ts` valida lo que lee de `localStorage` y rechaza operaciones inválidas
+  (`enqueueOperation` ahora regresa `true` o `false`).
+- `next.config.mjs` desactiva la cabecera `X-Powered-By`.
+
+### Resultado
+
+88 unitarias, 31 de integración, 33 de seguridad y 20 e2e pasando; el build y `verify` terminan bien.
+
+### Límites
+
+La CSP usa `'unsafe-inline'` en scripts (Next lo necesita para hidratar), no hay autenticación, y `npm audit`
+reporta vulnerabilidades en dependencias que siguen abiertas. Los detalles están en `docs/threat-model.md`.
