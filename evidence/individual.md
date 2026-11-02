@@ -330,3 +330,34 @@ Usé Claude como apoyo para planear cómo repartir la pirámide y para escribir 
 - Limites: las integraciones llaman a los manejadores reales y las E2E hacen HTTP, pero no abren un navegador, no revisan la consola CSP ni comprueban permisos interactivos o el service worker offline activo. No se afirma que estas pruebas eliminen las vulnerabilidades del audit.
 - Uso de IA: Codex (OpenAI) consulto la guia PDF, incorporo sus bloques, completo T11 con npm audit, ejecuto las comprobaciones y redacto esta evidencia. Los resultados anteriores fueron observados por Codex; no se atribuyen a una revision manual de Oscar. La revision personal del diff y la comprension del modelo por Oscar quedan pendientes antes de la entrega academica.
 
+
+
+## Integrante: María Fernanda Fuentes Abascal — Semana 9
+
+**1. ¿Cuál es mi commit?**
+
+`14b5610643de238a59c2be3cdab12178648e9ead` — "test: agrega pruebas de seguridad y el script test:security". Es el último de mi rama `fernanda/semana-9-seguridad`. Antes hice dos commits más con la validación, las cabeceras y el middleware.
+
+**2. ¿Qué hice?**
+
+Me tocó la parte de código de seguridad. Hice `src/lib/security/` con validación, datos personales, cabeceras y secretos. También hice el middleware y `tests/security.spec.ts`. Además endurecí la API de inspecciones y la cola offline.
+
+**3. ¿Cuál fue mi decisión técnica?**
+
+Valido todo con lista permitida. En otras palabras, solo acepto lo que sé que es válido, en vez de intentar bloquear lo malo. Por ejemplo, un id solo puede tener minúsculas, números y guiones. Si el id no cumple, la API responde el mismo 404 que con un id que no existe. Así no le digo al atacante qué falló ni le devuelvo lo que escribió.
+
+**4. ¿Qué prueba corrí y qué salió?**
+
+Corrí `npm run test:security` y salieron 33 pruebas pasando. Luego corrí `npm test` completo: 88 unitarias, 31 de integración y 33 de seguridad. También corrí `npm run build`, `npm run test:e2e` (20 pasando) y `npm run verify`, que terminó en pass. Abrí la app en Chrome y la consola salió sin errores, con el service worker registrado.
+
+**5. ¿Qué fallo encontré?**
+
+Encontré dos. El primero fue que `readQueue` confiaba en lo que había en `localStorage`. Si alguien lo cambiaba a mano, la cola podía mandar una operación manipulada. Ahora `readQueue` valida la forma de cada operación y descarta las inválidas. El segundo fue en `privacy.ts`. Usé `matchAll` y mis pruebas locales pasaban, pero `next build` falló en GitHub porque el proyecto compila a es5. Lo cambié por un ciclo con `exec` y el PR quedó en verde. Lo aprendí así: correr las pruebas no es suficiente, también hay que correr el build.
+
+**6. ¿Qué limitaciones tiene mi parte?**
+
+La CSP usa `'unsafe-inline'` en scripts porque Next lo necesita para hidratar. Con nonces la app dejaría de ser estática. No hay autenticación. El escáner de secretos solo busca patrones conocidos. Y `npm audit` reporta vulnerabilidades en dependencias que siguen abiertas.
+
+**7. ¿Usé IA?**
+
+Sí, usé Claude. Me ayudó con la guía, el código y a entender los errores. Yo copié el código, corrí cada comando y probé que todo pasara. También revisé el resultado en Chrome. No subí secretos, tokens ni datos personales; todo es sintético.
